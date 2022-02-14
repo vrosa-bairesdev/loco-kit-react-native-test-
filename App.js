@@ -11,21 +11,23 @@ export default class App extends Component {
     item: '...',
   };
   componentDidMount() {
-    const bus = new NativeEventEmitter(LocoKitModule)
-    bus.addListener('LocationStatusEvent', (data) => this.setState({ locationStatus: data }))
-    bus.addListener('TimeLineStatusEvent', (data) => {this.setState({ item: data }); console.log(data); })
-    bus.addListener('ActivityTypeEvent', (data) => this.setState({ activity: data }))
-    LocoKitModule.isAvailable((available) => {
-      console.log(available)
-      if (available) {
-        LocoKitModule.setup("<API Key Goes Here>", (result) => {
-          this.setState({ status: result })
-          LocoKitModule.start()
-        });
-      } else {
-        this.setState({ status: "LocoKit not available" })
-      }
-    })
+    if (LocoKitModule){
+      const bus = new NativeEventEmitter(LocoKitModule)
+      bus.addListener('LocationStatusEvent', (data) => this.setState({ locationStatus: data }))
+      bus.addListener('TimeLineStatusEvent', (data) => {this.setState({ item: data }); console.log(data); })
+      bus.addListener('ActivityTypeEvent', (data) => this.setState({ activity: data }))
+      LocoKitModule.isAvailable((available) => {
+        console.log(available)
+        if (available) {
+          LocoKitModule.setup("<API Key Goes Here>", (result) => {
+            this.setState({ status: result })
+            LocoKitModule.start()
+          });
+        } else {
+          this.setState({ status: "LocoKit not available" })
+        }
+      })
+    }
   }
   render(){
   return (
